@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace Bhoechie\Checklist\Events;
 
 class ExampleEvent extends Event
 {

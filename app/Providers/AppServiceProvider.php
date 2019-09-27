@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace Bhoechie\Checklist\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

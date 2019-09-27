@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace Bhoechie\Checklist\Jobs;
 
 class ExampleJob extends Job
 {

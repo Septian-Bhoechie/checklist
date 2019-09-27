@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace Bhoechie\Checklist\Listeners;
 
 use App\Events\ExampleEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ExampleListener
 {

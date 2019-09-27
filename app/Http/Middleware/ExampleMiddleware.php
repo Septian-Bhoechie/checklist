@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace Bhoechie\Checklist\Http\Middleware;
 
 use Closure;
 

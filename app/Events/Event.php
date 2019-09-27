@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace Bhoechie\Checklist\Events;
 
 use Illuminate\Queue\SerializesModels;
 
