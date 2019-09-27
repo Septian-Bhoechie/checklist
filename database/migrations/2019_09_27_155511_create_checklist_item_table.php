@@ -20,7 +20,7 @@ class CreateChecklistItemTable extends Migration
             $table->timestamp('completed_at')->nullable();
             $table->integer('urgency');
             $table->timestamp('due')->nullable();
-            $table->integer('task_id', 10)->nullable();
+            $table->integer('task_id')->nullable();
             $table->unsignedBigInteger('checklist_id');
             $table->unsignedBigInteger('assignee_id')->nullable();
             $table->unsignedBigInteger('created_by');
