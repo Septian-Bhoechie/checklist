@@ -15,7 +15,17 @@ class CreateTemplateItemTable extends Migration
     {
         Schema::create('template_items', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
+            $table->unsignedBigInteger('template_id');
+            $table->integer('urgency');
+            $table->text('description');
+            $table->tinyInteger('due_interval');
+            $table->enum('due_unit', ['second', 'minute', 'hour', 'day', 'month', 'year']);
+
+            $table->index('name');
+            $table->index('due_interval');
+            $table->index('due_unit');
+
+            $table->foreign('template_id')->references('id')->on('template_items')->onDelete('cascade');
         });
     }
 

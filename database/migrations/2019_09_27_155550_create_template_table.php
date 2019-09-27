@@ -15,7 +15,15 @@ class CreateTemplateTable extends Migration
     {
         Schema::create('templates', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
+            $table->string('name', 100);
+            $table->text('description');
+            $table->tinyInteger('due_interval');
+            $table->enum('due_unit', ['second', 'minute', 'hour', 'day', 'month', 'year']);
+
+            $table->index('name');
+            $table->index('due_interval');
+            $table->index('due_unit');
+
         });
     }
 
