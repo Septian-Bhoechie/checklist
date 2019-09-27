@@ -58,10 +58,7 @@ class UserTest extends TestCase
         ]);
 
         //test auth header
-        $this->get("api/user/show/22", [
-            'HTTP_Authorization' => $user->token,
-            'HTTP_Accept' => 'application/json',
-        ]);
+        $this->get("api/user/show/{$user->id}", ['HTTP_Authorization' => $user->token]);
         // dd($this->response->getContent());
         $this->seeJsonEquals($user->toArray());
     }
