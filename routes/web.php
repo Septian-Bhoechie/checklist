@@ -30,6 +30,7 @@ $router->group(['prefix' => 'api', 'middleware' => 'auth'], function ($router) {
 
     $router->get('checklists/items', 'CheckListItemController@index');
     $router->post('checklists/complete', 'CheckListItemController@complete');
+    $router->post('checklists/incomplete', 'CheckListItemController@incomplete');
     $router->get('checklists/{checklist_id}/items', 'CheckListItemController@items');
     $router->post('checklists/{checklist_id}/items', 'CheckListItemController@store');
     $router->get('checklists/{checklist_id}/items/{checklist_item_id}', 'CheckListItemController@show');

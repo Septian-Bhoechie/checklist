@@ -4,6 +4,7 @@ namespace Bhoechie\Checklist\Http\Controllers;
 
 use Bhoechie\Checklist\Jobs\CheckListItem\CompletingCheckListItem;
 use Bhoechie\Checklist\Jobs\CheckListItem\CreateCheckListItem;
+use Bhoechie\Checklist\Jobs\CheckListItem\InCompletingCheckListItem;
 use Bhoechie\Checklist\Jobs\CheckListItem\UpdateCheckListItem;
 use Bhoechie\Checklist\Models\CheckList\CheckList;
 use Bhoechie\Checklist\Models\CheckList\CheckListItem;
@@ -138,6 +139,27 @@ class CheckListItemController extends Controller
             'data.*.item_id' => 'required|exists:checklist_items,id',
         ]);
         $response = $this->dispatchNow(new CompletingCheckListItem($this->input()));
+
+        return response()->json($response);
+    }
+
+    /**
+     * incomplete checklist
+     * Route Path   : /api/checklists/incomplete
+     * Route Method : PATCH.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function incomplete(Request $request)
+    {
+        //validation request is compatible with json payload, because
+        //this function was overide on base controller
+        $this->validate($request, [
+            'data' => 'required|array',
+            'data.*.item_id' => 'required|exists:checklist_items,id',
+        ]);
+        $response = $this->dispatchNow(new InCompletingCheckListItem($this->input()));
 
         return response()->json($response);
     }

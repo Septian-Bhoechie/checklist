@@ -139,5 +139,12 @@ class CheckListItemTest extends TestCase
         $this->assertEquals(
             200, $this->response->getStatusCode()
         );
+
+        $this->actingAs($user)
+            ->post("api/checklists/incomplete", $payload);
+
+        $this->assertEquals(
+            200, $this->response->getStatusCode()
+        );
     }
 }
