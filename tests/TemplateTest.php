@@ -116,6 +116,7 @@ class TemplateTest extends TestCase
         ];
         $this->seeJsonEquals($response);
 
+        //update template
         $payload = [
             'name' => "foo template2",
             "checklist" => [
@@ -150,5 +151,13 @@ class TemplateTest extends TestCase
             ],
         ];
         $this->seeJsonEquals($response);
+
+        //deleting template
+        $this->actingAs($user)
+            ->delete("api/checklists/templates/{$paginate->first()->id}");
+        $this->assertEquals(
+            204, $this->response->getStatusCode()
+        );
+
     }
 }

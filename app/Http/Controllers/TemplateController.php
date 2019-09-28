@@ -5,7 +5,6 @@ namespace Bhoechie\Checklist\Http\Controllers;
 use Bhoechie\Checklist\Jobs\Template\CreateTemplate;
 use Bhoechie\Checklist\Jobs\Template\UpdateTemplate;
 use Bhoechie\Checklist\Models\Template\Template;
-use Bhoechie\Checklist\Models\User;
 use Illuminate\Http\Request;
 
 /**
@@ -106,7 +105,7 @@ class TemplateController extends Controller
 
     /**
      * show template
-     * Route Path   : /api/user/show
+     * Route Path   : /api/checklists/templates/{templateId}
      * Route Method : POST.
      *
      * @param \Illuminate\Http\Request $request
@@ -121,5 +120,25 @@ class TemplateController extends Controller
         }
 
         return response()->json($template);
+    }
+
+    /**
+     * show template
+     * Route Path   : /api/checklists/templates/{templateId}
+     * Route Method : DELETE.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(Request $request, $templateId)
+    {
+        $template = Template::with('items')->find($templateId);
+
+        if ($template instanceof Template === false) {
+            abort(404);
+        }
+        $deleted = $template->delete();
+
+        return response()->json('delete-success', 204);
     }
 }
