@@ -18,3 +18,13 @@ $factory->define(Bhoechie\Checklist\Models\User::class, function (Faker\Generato
         'password' => str_random(8),
     ];
 });
+
+$factory->define(Bhoechie\Checklist\Models\CheckList\CheckList::class, function (Faker\Generator $faker, $data) {
+    return [
+        "object_domain" => "contact",
+        "object_id" => 1,
+        "due" => "2019-01-25T12:50:14+00:00",
+        "urgency" => 1,
+        "description" => "Need to verify this guy house.",
+    ];
+});

@@ -28,9 +28,17 @@ $router->group(['prefix' => 'api', 'middleware' => 'auth'], function ($router) {
     $router->delete('checklists/templates/{template_id}', 'TemplateController@delete');
     $router->post('checklists/templates/{template_id}/assigns', 'TemplateController@assign');
 
+    $router->get('checklists/items', 'CheckListItemController@index');
+    $router->post('checklists/complete', 'CheckListItemController@complete');
+    $router->get('checklists/{checklist_id}/items', 'CheckListItemController@items');
+    $router->post('checklists/{checklist_id}/items', 'CheckListItemController@store');
+    $router->get('checklists/{checklist_id}/items/{checklist_item_id}', 'CheckListItemController@show');
+    $router->patch('checklists/{checklist_id}/items/{checklist_item_id}', 'CheckListItemController@update');
+
     $router->get('checklists', 'CheckListController@index');
     $router->post('checklists', 'CheckListController@store');
     $router->get('checklists/{checklist_id}', ['as' => 'api.checklist.show', 'uses' => 'CheckListController@show']);
     $router->patch('checklists/{checklist_id}', 'CheckListController@update');
     $router->delete('checklists/{checklist_id}', 'CheckListController@delete');
+
 });

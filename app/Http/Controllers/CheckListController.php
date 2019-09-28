@@ -26,7 +26,7 @@ class CheckListController extends Controller
     public function index(Request $request)
     {
 
-        $query = CheckList::query()->with('items');
+        $query = CheckList::query();
 
         if ($keyword = $request->input('filter', false)) {
             $query->where('name', 'like', "%{$keyword}%")
@@ -54,7 +54,6 @@ class CheckListController extends Controller
             'due' => 'required|date_format:Y-m-d\TH:i:sP',
             'urgency' => 'required|numeric|min:1',
             'description' => 'required',
-            'task_id' => 'required|numeric|min:1',
         ]);
 
         $response = $this->dispatchNow(new CreateCheckList($this->input()));
@@ -72,7 +71,7 @@ class CheckListController extends Controller
      */
     public function update(Request $request, $checklistId)
     {
-        $checkList = CheckList::with('items')->find($checklistId);
+        $checkList = CheckList::find($checklistId);
 
         if ($checkList instanceof CheckList === false) {
             abort(404);
@@ -86,7 +85,6 @@ class CheckListController extends Controller
             'due' => 'required|date_format:Y-m-d\TH:i:sP',
             'urgency' => 'required|numeric|min:1',
             'description' => 'required',
-            'task_id' => 'required|numeric|min:1',
         ]);
 
         $response = $this->dispatchNow(new UpdateCheckList($checkList, $this->input()));
@@ -104,7 +102,7 @@ class CheckListController extends Controller
      */
     public function show(Request $request, $checklistId)
     {
-        $checkList = CheckList::with('items')->find($checklistId);
+        $checkList = CheckList::find($checklistId);
 
         if ($checkList instanceof CheckList === false) {
             abort(404);
@@ -123,7 +121,7 @@ class CheckListController extends Controller
      */
     public function delete(Request $request, $checklistId)
     {
-        $checkList = CheckList::with('items')->find($checklistId);
+        $checkList = CheckList::find($checklistId);
 
         if ($checkList instanceof CheckList === false) {
             abort(404);

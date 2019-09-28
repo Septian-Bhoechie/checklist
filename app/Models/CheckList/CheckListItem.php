@@ -39,8 +39,12 @@ class CheckListItem extends Model
      *
      * @var array
      */
-    protected $hidden = [
-        'checklist_id',
+    protected $visible = [
+        'id', 'attributes', 'type', 'links',
+    ];
+
+    protected $appends = [
+        'attributes', 'type', 'links',
     ];
 
     /**
@@ -51,5 +55,32 @@ class CheckListItem extends Model
     public function checklist()
     {
         return $this->belongsTo(CheckList::class, 'checklist_id', 'id');
+    }
+
+    public function getAttributesAttribute()
+    {
+        return [
+            'assignee_id' => $this->object_id,
+            'task_id' => $this->object_domain,
+            'description' => $this->description,
+            'is_completed' => $this->is_completed,
+            'completed_at' => $this->completed_at,
+            'urgency' => $this->urgency,
+            'due' => $this->due,
+            'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
+        ];
+    }
+
+    public function getTypeAttribute()
+    {
+        return 'checklists';
+    }
+
+    public function getLinksAttribute()
+    {
+        return [
+            'self' => route('api.checklist.show', $this->id),
+        ];
     }
 }

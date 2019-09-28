@@ -42,7 +42,6 @@ class CheckListTest extends TestCase
         $payload = [
             "object_domain" => "contact",
             "object_id" => 1,
-            "task_id" => 123,
             "due" => "2019-01-25T12:50:14+00:00",
             "urgency" => 1,
             "description" => "Need to verify this guy house.",
@@ -55,7 +54,6 @@ class CheckListTest extends TestCase
         );
 
         // dd($this->response->getContent());
-
         $checkList = CheckList::orderBy('id', 'desc')->first();
         $this->seeJsonEquals([
             'data' => $checkList->toArray(),
@@ -72,7 +70,6 @@ class CheckListTest extends TestCase
         $payload = [
             "object_domain" => "contact2",
             "object_id" => 1,
-            "task_id" => 122,
             "due" => "2019-01-25T12:50:14+00:00",
             "urgency" => 1,
             "description" => "Need to verify this guy house2.",
