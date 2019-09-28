@@ -40,12 +40,12 @@ class Template extends Model
      *
      * @var array
      */
-    protected $hidden = [
-        'description', 'due_interval', 'due_unit',
+    protected $visible = [
+        'id', 'attributes', 'type',
     ];
 
     protected $appends = [
-        'checklist',
+        'attributes', 'type',
     ];
 
     /**
@@ -58,12 +58,21 @@ class Template extends Model
         return $this->hasMany(TemplateItem::class, 'template_id', 'id');
     }
 
-    public function getChecklistAttribute()
+    public function getAttributesAttribute()
     {
         return [
-            "description" => $this->description,
-            "due_interval" => $this->due_interval,
-            "due_unit" => $this->due_unit,
+            'name' => $this->name,
+            'items' => $this->items,
+            'checklist' => [
+                "description" => $this->description,
+                "due_interval" => $this->due_interval,
+                "due_unit" => $this->due_unit,
+            ],
         ];
+    }
+
+    public function getTypeAttribute()
+    {
+        return 'templates';
     }
 }

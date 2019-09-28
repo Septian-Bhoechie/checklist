@@ -65,7 +65,6 @@ class TemplateTest extends TestCase
         // with auth
         $this->actingAs($user)
             ->post('api/checklists/templates', $payload);
-
         $this->assertEquals(
             200, $this->response->getStatusCode()
         );
@@ -74,6 +73,7 @@ class TemplateTest extends TestCase
         $this->seeJsonEquals([
             'data' => [
                 'id' => $idTemplate,
+                'type' => 'templates',
                 'attributes' => $payload,
             ],
         ]);
@@ -111,7 +111,8 @@ class TemplateTest extends TestCase
         $response = [
             "data" => [
                 'id' => $paginate->first()->id,
-                'attributes' => Arr::except($paginate->first()->toArray(), ['id']),
+                'type' => 'templates',
+                'attributes' => Arr::except($paginate->first()->attributes, ['id']),
             ],
         ];
         $this->seeJsonEquals($response);
@@ -147,6 +148,7 @@ class TemplateTest extends TestCase
         $response = [
             "data" => [
                 'id' => $paginate->first()->id,
+                'type' => 'templates',
                 'attributes' => $payload,
             ],
         ];

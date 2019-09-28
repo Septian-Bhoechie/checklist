@@ -54,10 +54,8 @@ class UserTest extends TestCase
         $user->refresh();
         $this->seeJsonEquals([
             'data' => [
-                'attributes' => [
-                    'status' => 'success',
-                    'token' => $user->token,
-                ],
+                'status' => 'success',
+                'token' => $user->token,
             ],
         ]);
 
@@ -70,13 +68,9 @@ class UserTest extends TestCase
         //test auth header
         $this->get("api/user/show/$user->id", ['HTTP_Authorization' => $user->token]);
         // dd($this->response->getContent());
-        $user->addHidden(['id']);
         $this->seeJsonEquals(
             [
-                'data' => [
-                    'id' => $user->id,
-                    'attributes' => $user->toArray(),
-                ],
+                'data' => $user->toArray(),
             ]
         );
     }

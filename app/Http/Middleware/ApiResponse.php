@@ -41,16 +41,8 @@ class ApiResponse
                 ]);
             } else {
                 $data = [
-                    "data" => [
-                        'attributes' => $originalData,
-                    ],
+                    "data" => $originalData,
                 ];
-                if (isset($originalData->id)) {
-                    $originalData = (array) $originalData;
-                    $data['data']['id'] = $originalData['id'];
-                    unset($originalData['id']);
-                    $data['data']['attributes'] = $originalData;
-                }
 
                 $response->setData($data);
             }

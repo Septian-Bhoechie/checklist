@@ -68,7 +68,7 @@ class TemplateController extends Controller
     }
 
     /**
-     * create checklist Template
+     * update checklist Template
      * Route Path   : /api/checklists/templates
      * Route Method : PATCH.
      *
@@ -140,5 +140,35 @@ class TemplateController extends Controller
         $deleted = $template->delete();
 
         return response()->json('delete-success', 204);
+    }
+
+    /**
+     * create checklist Template
+     * Route Path   : /api/checklists/templates
+     * Route Method : PATCH.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function assign(Request $request, $templateId)
+    {
+        $template = Template::with('items')->find($templateId);
+
+        if ($template instanceof Template === false) {
+            abort(404);
+        }
+
+        //validation request is compatible with json payload, because
+        //this function was overide on base controller
+        $this->validate($request, [
+            'data' => 'required|array',
+            'data.*.attributes' => 'required|array',
+            'data.*.attributes.object_id' => 'required|numeric|min:1',
+            'data.*.attributes.object_domain' => 'required',
+        ]);
+
+        $response = $this->dispatchNow(new AssignTemplate($template, $this->input()));
+
+        return response()->json($response);
     }
 }

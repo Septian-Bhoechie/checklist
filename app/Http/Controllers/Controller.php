@@ -36,16 +36,18 @@ class Controller extends BaseController
             //get json payload
             $payload = $request->json()->all();
             //make sure json format is data -> attributes
-            $newRules['data'] = 'required|array';
-            $newRules['data.attributes'] = 'required|array';
-            $newMessages['data.required'] = 'json payload must wrap data with data.attributes';
-            $newMessages['data.attributes.required'] = 'json payload must wrap data with data.attributes';
-            //manipulate existing rules
-            foreach ($rules as $key => $value) {
-                $newRules["data.attributes.{$key}"] = $value;
-            }
-            foreach ($messages as $key => $value) {
-                $newMessages["data.attributes.{$key}"] = $value;
+            if (!isset($rules['data'])) {
+                $newRules['data'] = 'required|array';
+                $newRules['data.attributes'] = 'required|array';
+                $newMessages['data.required'] = 'json payload must wrap data with data.attributes';
+                $newMessages['data.attributes.required'] = 'json payload must wrap data with data.attributes';
+                //manipulate existing rules
+                foreach ($rules as $key => $value) {
+                    $newRules["data.attributes.{$key}"] = $value;
+                }
+                foreach ($messages as $key => $value) {
+                    $newMessages["data.attributes.{$key}"] = $value;
+                }
             }
         }
 

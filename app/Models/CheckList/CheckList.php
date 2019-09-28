@@ -43,4 +43,9 @@ class CheckList extends Model
     {
         return $this->hasMany(CheckListItem::class, 'checklist_id', 'id');
     }
+
+    public function getTypeAttribute()
+    {
+        return 'checklists';
+    }
 }
