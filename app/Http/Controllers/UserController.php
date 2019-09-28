@@ -32,7 +32,7 @@ class UserController extends Controller
 
         if (app('hash')->check($request->input('password'), $user->password)) {
             $token = base64_encode(str_random(40));
-            User::where('email', $request->input('email'))->update(['token' => "{$token}"]);
+            $user->update(['token' => "{$token}"]);
             return response()->json(['status' => 'success', 'token' => $token]);
         } else {
             return response()->json(['status' => 'fail'], 401);
