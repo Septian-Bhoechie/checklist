@@ -3,8 +3,7 @@
 namespace Bhoechie\Checklist\Http\Controllers;
 
 use Bhoechie\Checklist\Jobs\CheckList\CreateCheckList;
-use Bhoechie\Checklist\Jobs\Template\AssignTemplate;
-use Bhoechie\Checklist\Jobs\Template\UpdateTemplate;
+use Bhoechie\Checklist\Jobs\CheckList\UpdateCheckList;
 use Bhoechie\Checklist\Models\CheckList\CheckList;
 use Illuminate\Http\Request;
 
@@ -64,107 +63,73 @@ class CheckListController extends Controller
     }
 
     /**
-     * update checklist Template
-     * Route Path   : /api/checklists/templates
+     * update checklist
+     * Route Path   : /api/checklists
      * Route Method : PATCH.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $templateId)
+    public function update(Request $request, $checklistId)
     {
-        $template = Template::with('items')->find($templateId);
+        $checkList = CheckList::with('items')->find($checklistId);
 
-        if ($template instanceof Template === false) {
+        if ($checkList instanceof CheckList === false) {
             abort(404);
         }
 
         //validation request is compatible with json payload, because
         //this function was overide on base controller
         $this->validate($request, [
-            'name' => 'required',
-            'checklist' => 'required|array',
-            'checklist.description' => 'required',
-            'checklist.due_interval' => 'required|numeric|min:1',
-            'checklist.due_unit' => 'required|in:' . implode(',', $this->dueUnit),
-            'items' => 'required|array',
-            'items.*.description' => 'required',
-            'items.*.urgency' => 'required|numeric|min:1',
-            'items.*.due_interval' => 'required|numeric|min:1',
-            'items.*.due_unit' => 'required|in:' . implode(',', $this->dueUnit),
+            'object_id' => 'required|numeric|min:1',
+            'object_domain' => 'required',
+            'due' => 'required|date_format:Y-m-d\TH:i:sP',
+            'urgency' => 'required|numeric|min:1',
+            'description' => 'required',
+            'task_id' => 'required|numeric|min:1',
         ]);
 
-        $response = $this->dispatchNow(new UpdateTemplate($template, $this->input()));
+        $response = $this->dispatchNow(new UpdateCheckList($checkList, $this->input()));
 
         return response()->json($response);
     }
 
     /**
-     * show template
-     * Route Path   : /api/checklists/templates/{templateId}
+     * show checklist
+     * Route Path   : /api/checklists/{templateId}
      * Route Method : POST.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $templateId)
+    public function show(Request $request, $checklistId)
     {
-        $template = Template::with('items')->find($templateId);
+        $checkList = CheckList::with('items')->find($checklistId);
 
-        if ($template instanceof Template === false) {
+        if ($checkList instanceof CheckList === false) {
             abort(404);
         }
 
-        return response()->json($template);
+        return response()->json($checkList);
     }
 
     /**
-     * show template
-     * Route Path   : /api/checklists/templates/{templateId}
+     * delete checklist
+     * Route Path   : /api/checklists/{checklistId}
      * Route Method : DELETE.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(Request $request, $templateId)
+    public function delete(Request $request, $checklistId)
     {
-        $template = Template::with('items')->find($templateId);
+        $checkList = CheckList::with('items')->find($checklistId);
 
-        if ($template instanceof Template === false) {
+        if ($checkList instanceof CheckList === false) {
             abort(404);
         }
-        $deleted = $template->delete();
+        $deleted = $checkList->delete();
 
         return response()->json('delete-success', 204);
-    }
-
-    /**
-     * create checklist Template
-     * Route Path   : /api/checklists/templates
-     * Route Method : PATCH.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function assign(Request $request, $templateId)
-    {
-        $template = Template::with('items')->find($templateId);
-
-        if ($template instanceof Template === false) {
-            abort(404);
-        }
-
-        //validation request is compatible with json payload, because
-        //this function was overide on base controller
-        $this->validate($request, [
-            'data' => 'required|array',
-            'data.*.attributes' => 'required|array',
-            'data.*.attributes.object_id' => 'required|numeric|min:1',
-            'data.*.attributes.object_domain' => 'required',
-        ]);
-
-        $response = $this->dispatchNow(new AssignTemplate($template, $this->input()));
-
-        return response()->json($response);
     }
 }

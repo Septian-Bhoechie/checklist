@@ -14,7 +14,7 @@ class UpdateTemplate
      *
      * @return void
      */
-    public function __construct($template, $inputs = array())
+    public function __construct(Template $template, $inputs = array())
     {
         $this->template = $template;
         $this->inputs = $inputs;

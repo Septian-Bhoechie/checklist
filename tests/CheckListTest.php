@@ -54,10 +54,65 @@ class CheckListTest extends TestCase
             200, $this->response->getStatusCode()
         );
 
+        // dd($this->response->getContent());
+
         $checkList = CheckList::orderBy('id', 'desc')->first();
         $this->seeJsonEquals([
             'data' => $checkList->toArray(),
         ]);
 
+        //show detail
+        $this->actingAs($user)
+            ->get("api/checklists/{$checkList->id}");
+        $this->assertEquals(
+            200, $this->response->getStatusCode()
+        );
+
+        //updating checklist
+        $payload = [
+            "object_domain" => "contact2",
+            "object_id" => 1,
+            "task_id" => 122,
+            "due" => "2019-01-25T12:50:14+00:00",
+            "urgency" => 1,
+            "description" => "Need to verify this guy house2.",
+        ];
+        $this->actingAs($user)
+            ->patch("api/checklists/{$checkList->id}", $payload);
+        $checkList->refresh();
+        $this->seeJsonEquals([
+            'data' => $checkList->toArray(),
+        ]);
+
+        //check pagination
+        $this->actingAs($user)
+            ->get("api/checklists");
+        $this->assertEquals(
+            200, $this->response->getStatusCode()
+        );
+
+        $checkLists = CheckList::query()->with('items')->paginate(10);
+        $response = [
+            'meta' => [
+                "count" => 10,
+                "total" => $checkLists->total(),
+            ],
+            "links" => [
+                "first" => $checkLists->url(1),
+                "last" => $checkLists->url($checkLists->lastPage()),
+                "next" => $checkLists->nextPageUrl(),
+                "prev" => $checkLists->previousPageUrl(),
+            ],
+            "data" => $checkLists->items(),
+        ];
+
+        $this->seeJsonEquals($response);
+
+        //delete
+        $this->actingAs($user)
+            ->delete("api/checklists/{$checkList->id}");
+        $this->assertEquals(
+            204, $this->response->getStatusCode()
+        );
     }
 }

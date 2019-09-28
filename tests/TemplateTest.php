@@ -79,6 +79,7 @@ class TemplateTest extends TestCase
             ],
         ]);
 
+        //check pagination
         $this->actingAs($user)
             ->get('api/checklists/templates');
 
@@ -103,6 +104,7 @@ class TemplateTest extends TestCase
 
         $this->seeJsonEquals($response);
 
+        //show detail
         $this->actingAs($user)
             ->get("api/checklists/templates/{$templates->first()->id}");
 

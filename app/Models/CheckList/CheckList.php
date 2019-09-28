@@ -44,11 +44,11 @@ class CheckList extends Model
      * @var array
      */
     protected $visible = [
-        'id', 'attributes', 'type',
+        'id', 'attributes', 'type', 'links',
     ];
 
     protected $appends = [
-        'attributes', 'type',
+        'attributes', 'type', 'links',
     ];
 
     /**
@@ -79,6 +79,13 @@ class CheckList extends Model
     public function getTypeAttribute()
     {
         return 'checklists';
+    }
+
+    public function getLinksAttribute()
+    {
+        return [
+            'self' => route('api.checklist.show', $this->id),
+        ];
     }
 
     public function setDueAttribute($value)

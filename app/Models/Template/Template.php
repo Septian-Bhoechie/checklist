@@ -75,4 +75,11 @@ class Template extends Model
     {
         return 'templates';
     }
+
+    public function getLinksAttribute()
+    {
+        return [
+            'self' => route('api.templates.show', $this->id),
+        ];
+    }
 }
