@@ -68,21 +68,21 @@ class TemplateController extends Controller
     }
 
     /**
-     * show User
+     * show template
      * Route Path   : /api/user/show
      * Route Method : POST.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $userId)
+    public function show(Request $request, $templateId)
     {
-        $user = User::find($userId);
+        $template = Template::find($templateId);
 
-        if ($user instanceof User === false) {
+        if ($template instanceof Template === false) {
             abort(404);
         }
 
-        return response()->json($user);
+        return response()->json($template);
     }
 }

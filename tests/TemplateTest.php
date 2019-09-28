@@ -100,5 +100,12 @@ class TemplateTest extends TestCase
         ];
 
         $this->seeJsonEquals($response);
+
+        $this->actingAs($user)
+            ->get("api/checklists/templates/{$paginate->items()->first()->id}");
+
+        $this->assertEquals(
+            200, $this->response->getStatusCode()
+        );
     }
 }
