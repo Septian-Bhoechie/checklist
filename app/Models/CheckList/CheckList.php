@@ -2,6 +2,7 @@
 
 namespace Bhoechie\Checklist\Models\CheckList;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -29,9 +30,25 @@ class CheckList extends Model
         'created_by', 'updated_by',
     ];
 
+    // protected $dateFormat = 'Y-m-d\TH:i:sP';
+
     protected $casts = [
         'completed_at' => 'date',
         'due' => 'date',
+        'is_completed' => 'boolean',
+    ];
+
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $visible = [
+        'id', 'attributes', 'type',
+    ];
+
+    protected $appends = [
+        'attributes', 'type',
     ];
 
     /**
@@ -44,8 +61,28 @@ class CheckList extends Model
         return $this->hasMany(CheckListItem::class, 'checklist_id', 'id');
     }
 
+    public function getAttributesAttribute()
+    {
+        return [
+            'object_id' => $this->object_id,
+            'object_domain' => $this->object_domain,
+            'description' => $this->description,
+            'is_completed' => $this->is_completed,
+            'completed_at' => $this->completed_at,
+            'urgency' => $this->urgency,
+            'due' => $this->due,
+            'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
+        ];
+    }
+
     public function getTypeAttribute()
     {
         return 'checklists';
+    }
+
+    public function setDueAttribute($value)
+    {
+        $this->attributes['due'] = (new Carbon($value))->format('Y-m-d H:i:s');
     }
 }
