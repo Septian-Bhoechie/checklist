@@ -24,4 +24,5 @@ $router->group(['prefix' => 'api', 'middleware' => 'auth'], function ($router) {
     $router->get('checklists/templates', 'TemplateController@index');
     $router->post('checklists/templates', 'TemplateController@store');
     $router->get('checklists/templates/{template_id}', 'TemplateController@show');
+    $router->patch('checklists/templates/{template_id}', 'TemplateController@update');
 });

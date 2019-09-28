@@ -37,7 +37,7 @@ class TemplateTest extends TestCase
      *
      * @return void
      */
-    public function testCreateAndGet()
+    public function testCreateAndUpdate()
     {
         $user = factory(User::class)->create();
         $payload = [
@@ -112,6 +112,41 @@ class TemplateTest extends TestCase
             "data" => [
                 'id' => $paginate->first()->id,
                 'attributes' => Arr::except($paginate->first()->toArray(), ['id']),
+            ],
+        ];
+        $this->seeJsonEquals($response);
+
+        $payload = [
+            'name' => "foo template2",
+            "checklist" => [
+                "description" => "my checklist2",
+                "due_interval" => 2,
+                "due_unit" => "hour",
+            ],
+            "items" => [
+                [
+                    "description" => "my foo item2",
+                    "urgency" => 1,
+                    "due_interval" => 20,
+                    "due_unit" => "minute",
+                ],
+                [
+                    "description" => "my bar item2",
+                    "urgency" => 2,
+                    "due_interval" => 20,
+                    "due_unit" => "minute",
+                ],
+            ],
+        ];
+        $this->actingAs($user)
+            ->patch("api/checklists/templates/{$paginate->first()->id}", $payload);
+        $this->assertEquals(
+            200, $this->response->getStatusCode()
+        );
+        $response = [
+            "data" => [
+                'id' => $paginate->first()->id,
+                'attributes' => $payload,
             ],
         ];
         $this->seeJsonEquals($response);

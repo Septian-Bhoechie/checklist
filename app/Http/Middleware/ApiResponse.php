@@ -5,6 +5,11 @@ namespace Bhoechie\Checklist\Http\Middleware;
 use Closure;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Api Response Middleware.
+ *
+ * @author      bhoechie <septian.bhoechie@gmail.com>
+ */
 class ApiResponse
 {
     /**

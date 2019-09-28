@@ -3,6 +3,7 @@
 namespace Bhoechie\Checklist\Http\Controllers;
 
 use Bhoechie\Checklist\Jobs\Template\CreateTemplate;
+use Bhoechie\Checklist\Jobs\Template\UpdateTemplate;
 use Bhoechie\Checklist\Models\Template\Template;
 use Bhoechie\Checklist\Models\User;
 use Illuminate\Http\Request;
@@ -68,6 +69,42 @@ class TemplateController extends Controller
     }
 
     /**
+     * create checklist Template
+     * Route Path   : /api/checklists/templates
+     * Route Method : PATCH.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $templateId)
+    {
+        $template = Template::with('items')->find($templateId);
+
+        if ($template instanceof Template === false) {
+            abort(404);
+        }
+
+        //validation request is compatible with json payload, because
+        //this function was overide on base controller
+        $this->validate($request, [
+            'name' => 'required',
+            'checklist' => 'required|array',
+            'checklist.description' => 'required',
+            'checklist.due_interval' => 'required|numeric|min:1',
+            'checklist.due_unit' => 'required|in:' . implode(',', $this->dueUnit),
+            'items' => 'required|array',
+            'items.*.description' => 'required',
+            'items.*.urgency' => 'required|numeric|min:1',
+            'items.*.due_interval' => 'required|numeric|min:1',
+            'items.*.due_unit' => 'required|in:' . implode(',', $this->dueUnit),
+        ]);
+
+        $response = $this->dispatchNow(new UpdateTemplate($template, $this->input()));
+
+        return response()->json($response);
+    }
+
+    /**
      * show template
      * Route Path   : /api/user/show
      * Route Method : POST.
@@ -82,8 +119,6 @@ class TemplateController extends Controller
         if ($template instanceof Template === false) {
             abort(404);
         }
-
-        $template->makeVisible(['id']);
 
         return response()->json($template);
     }
