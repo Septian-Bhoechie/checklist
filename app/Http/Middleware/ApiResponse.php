@@ -35,11 +35,19 @@ class ApiResponse
                     "data" => $originalData->data,
                 ]);
             } else {
-                $response->setData([
+                $data = [
                     "data" => [
                         'attributes' => $originalData,
                     ],
-                ]);
+                ];
+                if (isset($originalData->id)) {
+                    $originalData = (array) $originalData;
+                    $data['data']['id'] = $originalData['id'];
+                    unset($originalData['id']);
+                    $data['data']['attributes'] = $originalData;
+                }
+
+                $response->setData($data);
             }
 
         }

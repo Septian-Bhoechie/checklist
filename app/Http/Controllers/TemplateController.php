@@ -77,11 +77,13 @@ class TemplateController extends Controller
      */
     public function show(Request $request, $templateId)
     {
-        $template = Template::find($templateId);
+        $template = Template::with('items')->find($templateId);
 
         if ($template instanceof Template === false) {
             abort(404);
         }
+
+        $template->makeVisible(['id']);
 
         return response()->json($template);
     }

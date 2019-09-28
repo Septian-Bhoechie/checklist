@@ -2,6 +2,7 @@
 
 use Bhoechie\Checklist\Models\Template\Template;
 use Bhoechie\Checklist\Models\User;
+use Illuminate\Support\Arr;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class TemplateTest extends TestCase
@@ -70,9 +71,9 @@ class TemplateTest extends TestCase
         );
 
         $idTemplate = Template::max('id');
-        $payload['id'] = $idTemplate;
         $this->seeJsonEquals([
             'data' => [
+                'id' => $idTemplate,
                 'attributes' => $payload,
             ],
         ]);
@@ -102,10 +103,17 @@ class TemplateTest extends TestCase
         $this->seeJsonEquals($response);
 
         $this->actingAs($user)
-            ->get("api/checklists/templates/{$paginate->items()->first()->id}");
+            ->get("api/checklists/templates/{$paginate->first()->id}");
 
         $this->assertEquals(
             200, $this->response->getStatusCode()
         );
+        $response = [
+            "data" => [
+                'id' => $paginate->first()->id,
+                'attributes' => Arr::except($paginate->first()->toArray(), ['id']),
+            ],
+        ];
+        $this->seeJsonEquals($response);
     }
 }
