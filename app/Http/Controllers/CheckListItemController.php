@@ -20,7 +20,7 @@ class CheckListItemController extends Controller
 
     /**
      * get checklist list
-     * Route Path   : /api/checklists
+     * Route Path   : /api/checklists/items
      * Route Method : GET.
      *
      * @param \Illuminate\Http\Request $request
