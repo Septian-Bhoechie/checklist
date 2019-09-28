@@ -18,9 +18,9 @@ class CreateChecklistTable extends Migration
             $table->string('object_domain', 50);
             $table->integer('object_id');
             $table->text('description');
-            $table->boolean('is_completed');
+            $table->boolean('is_completed')->default(0);
             $table->timestamp('completed_at')->nullable();
-            $table->integer('urgency');
+            $table->integer('urgency')->default(0);
             $table->timestamp('due')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();

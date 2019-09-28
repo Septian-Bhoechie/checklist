@@ -2,6 +2,7 @@
 
 namespace Bhoechie\Checklist\Http\Controllers;
 
+use Bhoechie\Checklist\Jobs\Template\AssignTemplate;
 use Bhoechie\Checklist\Jobs\Template\CreateTemplate;
 use Bhoechie\Checklist\Jobs\Template\UpdateTemplate;
 use Bhoechie\Checklist\Models\Template\Template;

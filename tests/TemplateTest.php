@@ -1,5 +1,6 @@
 <?php
 
+use Bhoechie\Checklist\Models\CheckList\CheckList;
 use Bhoechie\Checklist\Models\Template\Template;
 use Bhoechie\Checklist\Models\User;
 use Illuminate\Support\Arr;
@@ -85,34 +86,34 @@ class TemplateTest extends TestCase
             200, $this->response->getStatusCode()
         );
 
-        $paginate = Template::query()->with('items')->paginate(10);
+        $templates = Template::query()->with('items')->paginate(10);
         $response = [
             'meta' => [
                 "count" => 10,
-                "total" => $paginate->total(),
+                "total" => $templates->total(),
             ],
             "links" => [
-                "first" => $paginate->url(1),
-                "last" => $paginate->url($paginate->lastPage()),
-                "next" => $paginate->nextPageUrl(),
-                "prev" => $paginate->previousPageUrl(),
+                "first" => $templates->url(1),
+                "last" => $templates->url($templates->lastPage()),
+                "next" => $templates->nextPageUrl(),
+                "prev" => $templates->previousPageUrl(),
             ],
-            "data" => $paginate->items(),
+            "data" => $templates->items(),
         ];
 
         $this->seeJsonEquals($response);
 
         $this->actingAs($user)
-            ->get("api/checklists/templates/{$paginate->first()->id}");
+            ->get("api/checklists/templates/{$templates->first()->id}");
 
         $this->assertEquals(
             200, $this->response->getStatusCode()
         );
         $response = [
             "data" => [
-                'id' => $paginate->first()->id,
+                'id' => $templates->first()->id,
                 'type' => 'templates',
-                'attributes' => Arr::except($paginate->first()->attributes, ['id']),
+                'attributes' => Arr::except($templates->first()->attributes, ['id']),
             ],
         ];
         $this->seeJsonEquals($response);
@@ -141,22 +142,68 @@ class TemplateTest extends TestCase
             ],
         ];
         $this->actingAs($user)
-            ->patch("api/checklists/templates/{$paginate->first()->id}", $payload);
+            ->patch("api/checklists/templates/{$templates->first()->id}", $payload);
         $this->assertEquals(
             200, $this->response->getStatusCode()
         );
         $response = [
             "data" => [
-                'id' => $paginate->first()->id,
+                'id' => $templates->first()->id,
                 'type' => 'templates',
                 'attributes' => $payload,
             ],
         ];
         $this->seeJsonEquals($response);
 
+        //assign template
+        $payload = [
+            'data' => [
+                [
+                    "attributes" => [
+                        "object_id" => 1,
+                        "object_domain" => "deals",
+                    ],
+                ],
+                [
+                    "attributes" => [
+                        "object_id" => 2,
+                        "object_domain" => "deals",
+                    ],
+                ],
+                [
+                    "attributes" => [
+                        "object_id" => 3,
+                        "object_domain" => "deals",
+                    ],
+                ],
+            ],
+        ];
+
+        $this->actingAs($user)
+            ->post("api/checklists/templates/{$templates->first()->id}/assigns", $payload);
+        $this->assertEquals(
+            200, $this->response->getStatusCode()
+        );
+
+        $checklists = CheckList::with('items')->paginate(10);
+        $response = [
+            'meta' => [
+                "count" => 10,
+                "total" => $checklists->total(),
+            ],
+            "links" => [
+                "first" => $checklists->url(1),
+                "last" => $checklists->url($templates->lastPage()),
+                "next" => $checklists->nextPageUrl(),
+                "prev" => $checklists->previousPageUrl(),
+            ],
+            "data" => $checklists->items(),
+        ];
+        $this->seeJsonEquals($response);
+
         //deleting template
         $this->actingAs($user)
-            ->delete("api/checklists/templates/{$paginate->first()->id}");
+            ->delete("api/checklists/templates/{$templates->first()->id}");
         $this->assertEquals(
             204, $this->response->getStatusCode()
         );
