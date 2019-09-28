@@ -57,9 +57,9 @@ $app->singleton(
 |
  */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->middleware([
+    Bhoechie\Checklist\Http\Middleware\ApiResponse::class,
+]);
 
 $app->routeMiddleware([
     'auth' => Bhoechie\Checklist\Http\Middleware\Authenticate::class,

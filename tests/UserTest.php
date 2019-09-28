@@ -53,13 +53,29 @@ class UserTest extends TestCase
         $this->post('api/user/login', ['email' => $user->email, 'password' => $password]);
         $user->refresh();
         $this->seeJsonEquals([
-            'status' => 'success',
-            'token' => $user->token,
+            'data' => [
+                'attributes' => [
+                    'status' => 'success',
+                    'token' => $user->token,
+                ],
+            ],
         ]);
 
+        //test no auth header
+        $this->get("api/user/show/$user->id");
+        $this->assertEquals(
+            401, $this->response->getStatusCode()
+        );
+
         //test auth header
-        $this->get("api/user/show/{$user->id}", ['HTTP_Authorization' => $user->token]);
+        $this->get("api/user/show/$user->id", ['HTTP_Authorization' => $user->token]);
         // dd($this->response->getContent());
-        $this->seeJsonEquals($user->toArray());
+        $this->seeJsonEquals(
+            [
+                'data' => [
+                    'attributes' => $user->toArray(),
+                ],
+            ]
+        );
     }
 }

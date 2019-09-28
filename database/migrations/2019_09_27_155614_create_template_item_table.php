@@ -24,7 +24,7 @@ class CreateTemplateItemTable extends Migration
             $table->index('due_interval');
             $table->index('due_unit');
 
-            $table->foreign('template_id')->references('id')->on('template_items')->onDelete('cascade');
+            $table->foreign('template_id')->references('id')->on('templates')->onDelete('cascade');
         });
     }
 

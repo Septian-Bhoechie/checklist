@@ -2,6 +2,8 @@
 
 namespace Bhoechie\Checklist\Http\Controllers;
 
+use Bhoechie\Checklist\Jobs\Template\CreateTemplate;
+use Bhoechie\Checklist\Models\Template\Template;
 use Bhoechie\Checklist\Models\User;
 use Illuminate\Http\Request;
 
@@ -12,6 +14,28 @@ use Illuminate\Http\Request;
  */
 class TemplateController extends Controller
 {
+    private $dueUnit = ['second', 'minute', 'hour', 'day', 'month', 'year'];
+
+    /**
+     * get checklist list Template
+     * Route Path   : /api/checklists/templates
+     * Route Method : GET.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request)
+    {
+
+        $query = Template::query()->with('items');
+
+        if ($keyword = $request->input('filter', false)) {
+            $query->where('name', 'like', "%{$keyword}%")
+                ->orWhere('description', 'like', "%{$keyword}%");
+        }
+
+        return response()->json($query->paginate($request->input('limit', 10))->appends($request->except('page')));
+    }
 
     /**
      * create checklist Template
@@ -21,22 +45,26 @@ class TemplateController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function authenticate(Request $request)
+    public function store(Request $request)
     {
+        //validation request is compatible with json payload, because
+        //this function was overide on base controller
         $this->validate($request, [
-            'email' => 'required',
-            'password' => 'required',
+            'name' => 'required',
+            'checklist' => 'required|array',
+            'checklist.description' => 'required',
+            'checklist.due_interval' => 'required|numeric|min:1',
+            'checklist.due_unit' => 'required|in:' . implode(',', $this->dueUnit),
+            'items' => 'required|array',
+            'items.*.description' => 'required',
+            'items.*.urgency' => 'required|numeric|min:1',
+            'items.*.due_interval' => 'required|numeric|min:1',
+            'items.*.due_unit' => 'required|in:' . implode(',', $this->dueUnit),
         ]);
 
-        $user = User::where('email', $request->input('email'))->first();
+        $response = $this->dispatchNow(new CreateTemplate($this->input()));
 
-        if (app('hash')->check($request->input('password'), $user->password)) {
-            $token = base64_encode(str_random(40));
-            User::where('email', $request->input('email'))->update(['token' => "{$token}"]);
-            return response()->json(['status' => 'success', 'token' => $token]);
-        } else {
-            return response()->json(['status' => 'fail'], 401);
-        }
+        return response()->json($response);
     }
 
     /**

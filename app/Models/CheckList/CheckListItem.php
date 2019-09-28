@@ -1,6 +1,6 @@
 <?php
 
-namespace Bhoechie\Checklist\Models\Template;
+namespace Bhoechie\Checklist\Models\CheckList;
 
 use Illuminate\Database\Eloquent\Model;
 

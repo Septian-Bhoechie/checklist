@@ -29,6 +29,26 @@ class Template extends Model
     ];
 
     /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'description', 'due_interval', 'due_unit',
+    ];
+
+    protected $appends = [
+        'checklist',
+    ];
+
+    /**
      * Define `belongsTo` relation with TemplateItem model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -36,5 +56,14 @@ class Template extends Model
     public function items()
     {
         return $this->hasMany(TemplateItem::class, 'template_id', 'id');
+    }
+
+    public function getChecklistAttribute()
+    {
+        return [
+            "description" => $this->description,
+            "due_interval" => $this->due_interval,
+            "due_unit" => $this->due_unit,
+        ];
     }
 }

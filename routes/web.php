@@ -20,4 +20,7 @@ $router->group(['prefix' => 'api'], function ($router) {
 
 $router->group(['prefix' => 'api', 'middleware' => 'auth'], function ($router) {
     $router->get('user/show/{user_id}', 'UserController@show');
+
+    $router->get('checklists/templates', 'TemplateController@index');
+    $router->post('checklists/templates', 'TemplateController@store');
 });

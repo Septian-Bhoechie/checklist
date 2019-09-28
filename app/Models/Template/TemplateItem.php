@@ -29,12 +29,19 @@ class TemplateItem extends Model
     ];
 
     /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
     protected $hidden = [
-        'template_id',
+        'template_id', 'id',
     ];
 
     /**
